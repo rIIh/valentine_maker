@@ -1,0 +1,46 @@
+name: valentine
+description: "A Valentine maker"
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.2.3 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # navigation
+  go_router: ^13.0.1
+
+  # theme
+  theme_tailor_annotation: ^2.0.0
+  google_fonts: ^6.1.0
+
+  # drawing
+  scribble: ^0.9.1
+  flutter_painting_tools: ^1.3.0
+  flutter_painter_v2: ^2.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  analyzer: ^6.2.0
+  build_runner: ^2.4.0
+  flutter_lints: ^2.0.0
+  theme_tailor: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/icons/
+    - assets/images/
+    - assets/images/maker/
+    - assets/images/maker/toolbar/
+    - assets/images/maker/faces/
+    - assets/images/onboarding/
+    - assets/images/onboarding/floating/

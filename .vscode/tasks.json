@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build_runner watch",
+            "command": "flutter pub run build_runner watch",
+            "type": "shell",
+            "runOptions": {
+                "runOn": "folderOpen",
+                "instanceLimit": 1
+            },
+            "presentation": {
+                "reveal": "silent",
+                "panel": "new"
+                
+            }
+        }
+    ]
+}
