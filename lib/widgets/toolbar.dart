@@ -17,15 +17,21 @@ class ToolbarActionData<T> {
   ToolbarActionData({required this.value, required this.child});
 }
 
+enum Palette { sizes, colors, none }
+
 class Toolbar<T> extends StatelessWidget {
   final T selected;
   final ValueSetter<T> onSelected;
   final List<ToolbarActionData<T>> actions;
 
+  final Palette activePalette;
+
   final int? selectedColor;
-  final bool showColors;
   final List<Color> colors;
   final ValueSetter<int>? onColorSelected;
+
+  final double selectedSize;
+  final ValueSetter<double>? onSizeSelected;
 
   const Toolbar({
     super.key,
@@ -35,7 +41,9 @@ class Toolbar<T> extends StatelessWidget {
     this.selectedColor,
     this.colors = const [],
     this.onColorSelected,
-    this.showColors = false,
+    this.activePalette = Palette.none,
+    this.selectedSize = 22,
+    this.onSizeSelected,
   });
 
   @override
@@ -57,7 +65,7 @@ class Toolbar<T> extends StatelessWidget {
             children: [
               ClipRect(
                 child: AnimatedAlign(
-                  heightFactor: showColors ? 1 : 0,
+                  heightFactor: activePalette == Palette.colors ? 1 : 0,
                   alignment: Alignment.topCenter,
                   duration: const Duration(milliseconds: 200),
                   child: Center(
@@ -97,21 +105,59 @@ class Toolbar<T> extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
-                child: SizedBox(
-                  height: 95,
-                  child: Wrap(
-                    spacing: 25,
-                    children: [
-                      for (final action in actions)
-                        ToolbarAction(
-                          selected: selected == action.value,
-                          onSelected: () => onSelected(action.value),
-                          child: action.child,
+              ClipRect(
+                child: AnimatedAlign(
+                  heightFactor: activePalette == Palette.sizes ? 1 : 0,
+                  alignment: Alignment.topCenter,
+                  duration: const Duration(milliseconds: 200),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 20, top: 10),
+                      child: SingleChildScrollView(
+                        clipBehavior: Clip.none,
+                        padding: const EdgeInsets.symmetric(horizontal: 28),
+                        scrollDirection: Axis.horizontal,
+                        child: Wrap(
+                          spacing: 50,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            for (final size in <double>[22, 33, 44, 55])
+                              GestureDetector(
+                                onTap: () => onSizeSelected?.call(size),
+                                child: AnimatedContainer(
+                                  width: size,
+                                  height: size,
+                                  duration: const Duration(milliseconds: 140),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      width: selectedSize == size ? 5 : 0,
+                                      color: selectedSize == size ? context.pink : context.pink.withAlpha(0),
+                                      strokeAlign: BorderSide.strokeAlignOutside,
+                                    ),
+                                    color: context.white,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                    ].toList(),
+                      ),
+                    ),
                   ),
+                ),
+              ),
+              SizedBox(
+                height: 95,
+                child: Wrap(
+                  spacing: 25,
+                  children: [
+                    for (final action in actions)
+                      ToolbarAction(
+                        selected: selected == action.value,
+                        onSelected: () => onSelected(action.value),
+                        child: action.child,
+                      ),
+                  ].toList(),
                 ),
               )
             ],

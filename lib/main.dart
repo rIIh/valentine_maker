@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:valentine/router.dart';
 import 'package:valentine/theme/theme.dart';
 
@@ -17,6 +18,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: kLightTheme,
       darkTheme: kDarkTheme,
+      builder: (context, child) => ResponsiveBreakpoints.builder(
+        breakpoints: [],
+        child: child!,
+      ),
     );
   }
 }

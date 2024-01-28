@@ -29,9 +29,12 @@ class OnboardingPage extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () => GoRouter.of(context).push('/make'),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Image.asset('assets/images/onboarding/heart_bottom.png'),
+            child: OverflowBox(
+              maxWidth: double.infinity,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Image.asset('assets/images/onboarding/heart_bottom.png'),
+              ),
             ),
           ),
           for (final index in List.generate(
