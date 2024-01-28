@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:file_picker/file_picker.dart';
@@ -54,7 +55,7 @@ class _SharePageState extends State<SharePage> with SingleTickerProviderStateMix
 
   Future<ByteData> save() async {
     final boundary = _repaintBoundaryKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-    ui.Image image = await boundary.toImage();
+    ui.Image image = await boundary.toImage(pixelRatio: max(MediaQuery.devicePixelRatioOf(context), 4));
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     return byteData!;
   }
