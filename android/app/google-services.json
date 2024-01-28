@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "179512636197",
+    "project_id": "valentine-maker",
+    "storage_bucket": "valentine-maker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:179512636197:android:001081d9b47725a5cba0cc",
+        "android_client_info": {
+          "package_name": "space.melv.valentine"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8OWhGqMlsENLvri5oYf31hbWCcFJczng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

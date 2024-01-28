@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -7,6 +11,9 @@ import 'package:valentine/pages/valentine_maker_page.dart';
 import 'package:valentine/theme/theme.dart';
 
 final kRouter = GoRouter(
+  observers: [
+    if (kIsWeb || !Platform.isLinux) FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+  ],
   routes: [
     GoRoute(
       path: '/',
