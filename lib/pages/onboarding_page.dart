@@ -2,20 +2,22 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:valentine/theme/theme.dart';
 
 const _kPositions = [
-  Alignment(-.8, -.8),
-  Alignment(.8, -.8),
-  Alignment(-.8, -.4),
-  Alignment(.8, -.45),
-  Alignment(1, -.1),
-  Alignment(-1, .1),
+  Alignment(-.6, -.9),
+  Alignment(1.05, -.9),
+  Alignment(-1, -.5),
+  Alignment(.45, -.5),
+  Alignment(1.15, -.1),
+  Alignment(-1.15, .1),
   Alignment(.6, .2),
-  Alignment(-.3, .25),
-  Alignment(.95, .5),
-  Alignment(-.95, .75),
-  Alignment(.95, .85),
+  Alignment(-.6, .4),
+  Alignment(1.05, .7),
+  Alignment(-.95, .9),
+  Alignment(.95, 1.05),
+  Alignment(.0, .05),
 ];
 
 class OnboardingPage extends StatelessWidget {
@@ -37,16 +39,19 @@ class OnboardingPage extends StatelessWidget {
               ),
             ),
           ),
-          for (final index in List.generate(
-            11,
-            (index) => index + 1,
-          ))
-            Align(
-              alignment: _kPositions[index - 1],
-              child: _FloatingItem(index: index),
+          Center(
+            child: MaxWidthBox(
+              maxWidth: 800,
+              child: Stack(
+                children: [
+                  for (final index in List.generate(_kPositions.length, (index) => index))
+                    Align(alignment: _kPositions[index], child: _FloatingItem(index: index + 1)),
+                ],
+              ),
             ),
+          ),
           Align(
-            alignment: const Alignment(0, -.5),
+            alignment: const Alignment(0, -.25),
             child: Text.rich(
               textAlign: TextAlign.center,
               TextSpan(
