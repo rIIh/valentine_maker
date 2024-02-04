@@ -50,118 +50,109 @@ class Toolbar<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return RestorationScope(
       restorationId: 'colors',
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: context.background,
-          border: Border(
-            top: BorderSide(color: context.pink, width: 20),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ClipRect(
-                child: AnimatedAlign(
-                  heightFactor: activePalette == Palette.colors ? 1 : 0,
-                  alignment: Alignment.topCenter,
-                  duration: const Duration(milliseconds: 200),
-                  child: Center(
-                    child: Padding(
-                      key: const Key('colors'),
-                      padding: const EdgeInsets.only(bottom: 20, top: 10),
-                      child: SingleChildScrollView(
-                        clipBehavior: Clip.none,
-                        restorationId: 'colors',
-                        padding: const EdgeInsets.symmetric(horizontal: 28),
-                        scrollDirection: Axis.horizontal,
-                        child: Wrap(
-                          spacing: 33,
-                          children: [
-                            for (final (index, color) in colors.indexed)
-                              GestureDetector(
-                                onTap: () => onColorSelected?.call(index),
-                                child: AnimatedContainer(
-                                  width: 55,
-                                  height: 55,
-                                  duration: const Duration(milliseconds: 140),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      width: selectedColor == index ? 5 : 0,
-                                      color: selectedColor == index ? context.white : Colors.white.withAlpha(0),
-                                      strokeAlign: BorderSide.strokeAlignOutside,
-                                    ),
-                                    color: color,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClipRect(
+              child: AnimatedAlign(
+                heightFactor: activePalette == Palette.colors ? 1 : 0,
+                alignment: Alignment.topCenter,
+                duration: const Duration(milliseconds: 200),
+                child: Center(
+                  child: Padding(
+                    key: const Key('colors'),
+                    padding: const EdgeInsets.only(bottom: 20, top: 10),
+                    child: SingleChildScrollView(
+                      clipBehavior: Clip.none,
+                      restorationId: 'colors',
+                      padding: const EdgeInsets.symmetric(horizontal: 28),
+                      scrollDirection: Axis.horizontal,
+                      child: Wrap(
+                        spacing: 33,
+                        children: [
+                          for (final (index, color) in colors.indexed)
+                            GestureDetector(
+                              onTap: () => onColorSelected?.call(index),
+                              child: AnimatedContainer(
+                                width: 55,
+                                height: 55,
+                                duration: const Duration(milliseconds: 140),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    width: selectedColor == index ? 5 : 0,
+                                    color: selectedColor == index ? context.white : Colors.white.withAlpha(0),
+                                    strokeAlign: BorderSide.strokeAlignOutside,
                                   ),
+                                  color: color,
                                 ),
                               ),
-                          ],
-                        ),
+                            ),
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
-              ClipRect(
-                child: AnimatedAlign(
-                  heightFactor: activePalette == Palette.sizes ? 1 : 0,
-                  alignment: Alignment.topCenter,
-                  duration: const Duration(milliseconds: 200),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 20, top: 10),
-                      child: SingleChildScrollView(
-                        clipBehavior: Clip.none,
-                        padding: const EdgeInsets.symmetric(horizontal: 28),
-                        scrollDirection: Axis.horizontal,
-                        child: Wrap(
-                          spacing: 50,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            for (final size in <double>[22, 33, 44, 55])
-                              GestureDetector(
-                                onTap: () => onSizeSelected?.call(size),
-                                child: AnimatedContainer(
-                                  width: size,
-                                  height: size,
-                                  duration: const Duration(milliseconds: 140),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      width: selectedSize == size ? 5 : 0,
-                                      color: selectedSize == size ? context.pink : context.pink.withAlpha(0),
-                                      strokeAlign: BorderSide.strokeAlignOutside,
-                                    ),
-                                    color: context.white,
+            ),
+            ClipRect(
+              child: AnimatedAlign(
+                heightFactor: activePalette == Palette.sizes ? 1 : 0,
+                alignment: Alignment.topCenter,
+                duration: const Duration(milliseconds: 200),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20, top: 10),
+                    child: SingleChildScrollView(
+                      clipBehavior: Clip.none,
+                      padding: const EdgeInsets.symmetric(horizontal: 28),
+                      scrollDirection: Axis.horizontal,
+                      child: Wrap(
+                        spacing: 50,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          for (final size in <double>[22, 33, 44, 55])
+                            GestureDetector(
+                              onTap: () => onSizeSelected?.call(size),
+                              child: AnimatedContainer(
+                                width: size,
+                                height: size,
+                                duration: const Duration(milliseconds: 140),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    width: selectedSize == size ? 5 : 0,
+                                    color: selectedSize == size ? context.pink : context.pink.withAlpha(0),
+                                    strokeAlign: BorderSide.strokeAlignOutside,
                                   ),
+                                  color: context.white,
                                 ),
                               ),
-                          ],
-                        ),
+                            ),
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
-              SizedBox(
-                height: 95,
-                child: Wrap(
-                  spacing: 25,
-                  children: [
-                    for (final action in actions)
-                      ToolbarAction(
-                        selected: selected == action.value,
-                        onSelected: () => onSelected(action.value),
-                        child: action.child,
-                      ),
-                  ].toList(),
-                ),
-              )
-            ],
-          ),
+            ),
+            SizedBox(
+              height: 95,
+              child: Wrap(
+                spacing: 25,
+                children: [
+                  for (final action in actions)
+                    ToolbarAction(
+                      selected: selected == action.value,
+                      onSelected: () => onSelected(action.value),
+                      child: action.child,
+                    ),
+                ].toList(),
+              ),
+            )
+          ],
         ),
       ),
     );

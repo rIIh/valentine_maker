@@ -11,16 +11,19 @@ import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:valentine/pages/valentine_maker_page.dart';
 import 'package:valentine/theme/theme.dart';
 
 final class ShareTemplate {
   final PainterController paint;
+  final List<StickerData> stickers;
   final Color backgroundColor;
   final Color heartColor;
   final String? face;
 
   const ShareTemplate({
     required this.paint,
+    required this.stickers,
     required this.backgroundColor,
     required this.heartColor,
     required this.face,
@@ -151,6 +154,7 @@ class _SharePageState extends State<SharePage> with SingleTickerProviderStateMix
                           child: Padding(
                             padding: const EdgeInsets.all(5),
                             child: Snapshot(
+                              stickers: widget.template.stickers,
                               backgroundColor: widget.template.backgroundColor,
                               heartColor: widget.template.heartColor,
                               face: widget.template.face,
@@ -212,6 +216,7 @@ class _SharePageState extends State<SharePage> with SingleTickerProviderStateMix
 
 class Snapshot extends StatelessWidget {
   final PainterController paint;
+  final List<StickerData> stickers;
   final Color backgroundColor;
   final Color heartColor;
   final String? face;
@@ -222,6 +227,7 @@ class Snapshot extends StatelessWidget {
     required this.heartColor,
     required this.face,
     required this.paint,
+    required this.stickers,
   });
 
   @override
@@ -267,6 +273,24 @@ class Snapshot extends StatelessWidget {
                   child: FlutterPainter(
                     controller: paint,
                   ),
+                ),
+              ),
+              Positioned.fill(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: LayoutBuilder(builder: (context, constraints) {
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        for (final sticker in stickers)
+                          Positioned(
+                            left: sticker.position.dx + constraints.maxWidth / 2,
+                            top: sticker.position.dy + constraints.maxHeight / 2,
+                            child: Image.asset(sticker.image),
+                          ),
+                      ],
+                    );
+                  }),
                 ),
               ),
             ],

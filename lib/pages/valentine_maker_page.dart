@@ -1,12 +1,16 @@
 import 'dart:math';
+import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_painter_v2/flutter_painter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:valentine/constants/heart_colors.dart';
 import 'package:valentine/pages/share_page.dart';
 import 'package:valentine/theme/theme.dart';
 import 'package:valentine/widgets/color_fill_animation.dart';
+import 'package:valentine/widgets/responsive_scaled_box_pixel_ratio_fix.dart';
+import 'package:valentine/widgets/stickers.dart';
 import 'package:valentine/widgets/toolbar.dart';
 
 const kFaces = [
@@ -21,6 +25,7 @@ const kFaces = [
 enum Steps {
   chooseFace,
   edit,
+  stickers,
   snapshot(end: true);
 
   final bool end;
@@ -35,15 +40,31 @@ class StepsMachine {
 
   Steps? get next => switch (current) {
         Steps.chooseFace => Steps.edit,
-        Steps.edit => Steps.snapshot,
+        Steps.edit => Steps.stickers,
+        Steps.stickers => Steps.snapshot,
         _ => null,
       };
 
   Steps? get previous => switch (current) {
         Steps.edit => Steps.chooseFace,
+        Steps.stickers => Steps.edit,
         Steps.snapshot => Steps.edit,
         _ => null,
       };
+}
+
+class StickerData {
+  final Offset position;
+  final String image;
+
+  const StickerData({required this.position, required this.image});
+}
+
+class StickerDragData {
+  final int? index;
+  final String image;
+
+  StickerDragData(this.index, this.image);
 }
 
 class ValentineMakerPage extends StatefulWidget {
@@ -61,6 +82,9 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
   Offset? offset;
   late final colors = getHeartColors(context)..shuffle();
   late int heartColorIndex = Random().nextInt(colors.length);
+
+  final GlobalKey _stickersDrawerKey = GlobalKey();
+  final List<StickerData> stickers = [];
 
   late int faceIndex = Random().nextInt(kFaces.length + 1) - 1;
 
@@ -162,6 +186,8 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
 
   @override
   Widget build(BuildContext context) {
+    debugPrintGestureArenaDiagnostics = true;
+
     return Scaffold(
       backgroundColor: context.background,
       body: Stack(
@@ -244,8 +270,10 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
               child: SizedBox(
                 width: 100000,
                 height: 100000,
-                child: FlutterPainter(
-                  controller: _paintController,
+                child: RepaintBoundary(
+                  child: FlutterPainter(
+                    controller: _paintController,
+                  ),
                 ),
               ),
             ),
@@ -262,6 +290,7 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
                     '/share',
                     extra: ShareTemplate(
                       paint: PainterController.fromValue(_paintController.value),
+                      stickers: stickers,
                       backgroundColor: colors[heartColorIndex].background,
                       heartColor: colors[heartColorIndex].foreground,
                       face: faceIndex >= 0 ? kFaces[faceIndex] : null,
@@ -272,35 +301,117 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
               ),
             ),
           ),
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.center,
+              child: LayoutBuilder(builder: (context, constraints) {
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(key: _stickersDrawerKey, width: 0, height: 0),
+                      ),
+                    ),
+                    for (final (index, sticker) in stickers.indexed)
+                      Positioned(
+                        left: sticker.position.dx + constraints.maxWidth / 2,
+                        top: sticker.position.dy + constraints.maxHeight / 2,
+                        child: IgnorePointer(
+                          ignoring: step != Steps.stickers,
+                          child: Draggable(
+                            data: StickerDragData(index, sticker.image),
+                            childWhenDragging: const SizedBox(),
+                            maxSimultaneousDrags: 1,
+                            feedback: DraggableFeedbackSticker(image: sticker.image, scale: context.watch<Scale>()),
+                            child: Image.asset(sticker.image),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              }),
+            ),
+          ),
+          Positioned.fill(
+            child: LayoutBuilder(
+              builder: (context, constraints) => DragTarget<StickerDragData>(
+                hitTestBehavior: HitTestBehavior.translucent,
+                onWillAccept: (data) => true,
+                onAcceptWithDetails: (data) => setState(() {
+                  final offset = data.offset / context.read<Scale>().value -
+                      Offset(constraints.maxWidth / 2, constraints.maxHeight / 2);
+
+                  if (data.data.index == null) {
+                    stickers.add(StickerData(position: offset, image: data.data.image));
+                  } else {
+                    stickers[data.data.index!] = StickerData(position: offset, image: data.data.image);
+                  }
+                }),
+                builder: (context, candidateData, rejectedData) => const SizedBox(),
+              ),
+            ),
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: AnimatedSlide(
-              offset: Offset(0, step != Steps.edit ? 1 : 0),
+              offset: Offset(0, {Steps.edit, Steps.stickers}.contains(step) ? 0 : 1),
               duration: const Duration(milliseconds: 160),
               curve: Curves.ease,
-              child: Toolbar(
-                selected: tool,
-                onSelected: (value) => tool = value,
-                colors: paintColors,
-                activePalette: switch (tool) {
-                  DefaultToolbarActions.erase => Palette.sizes,
-                  DefaultToolbarActions.pen => Palette.colors,
-                  _ => Palette.none,
-                },
-                selectedColor: selectedPaintColor,
-                onColorSelected: (index) => selectedPaintColor = index,
-                selectedSize: _paintController.freeStyleStrokeWidth,
-                onSizeSelected: (value) {
-                  switch (tool) {
-                    case DefaultToolbarActions.erase:
-                      _paintController.freeStyleStrokeWidth = value;
-                      setState(() {});
+              child: Container(
+                decoration: BoxDecoration(
+                  color: context.background,
+                  border: Border(
+                    top: BorderSide(color: context.pink, width: 20),
+                  ),
+                ),
+                child: DragTarget<StickerDragData>(
+                  onAccept: (data) => setState(() => stickers.removeAt(data.index!)),
+                  onWillAccept: (data) => data?.index != null,
+                  builder: (context, candidateData, rejectedData) => SizedBox(
+                    width: double.infinity,
+                    child: Stack(
+                      fit: StackFit.passthrough,
+                      children: [
+                        AnimatedSlide(
+                          duration: const Duration(milliseconds: 160),
+                          offset: Offset(step == Steps.edit ? 0 : -1, 0),
+                          child: Toolbar(
+                            selected: tool,
+                            onSelected: (value) => tool = value,
+                            colors: paintColors,
+                            activePalette: switch (tool) {
+                              DefaultToolbarActions.erase => Palette.sizes,
+                              DefaultToolbarActions.pen => Palette.colors,
+                              _ => Palette.none,
+                            },
+                            selectedColor: selectedPaintColor,
+                            onColorSelected: (index) => selectedPaintColor = index,
+                            selectedSize: _paintController.freeStyleStrokeWidth,
+                            onSizeSelected: (value) {
+                              switch (tool) {
+                                case DefaultToolbarActions.erase:
+                                  _paintController.freeStyleStrokeWidth = value;
+                                  setState(() {});
 
-                    default:
-                  }
-                },
-                actions:
-                    DefaultToolbarActions.values.map((e) => ToolbarActionData(value: e, child: e.build())).toList(),
+                                default:
+                              }
+                            },
+                            actions: DefaultToolbarActions.values
+                                .map((e) => ToolbarActionData(value: e, child: e.build()))
+                                .toList(),
+                          ),
+                        ),
+                        AnimatedSlide(
+                          duration: const Duration(milliseconds: 160),
+                          offset: Offset(step == Steps.stickers ? 0 : 1, 0),
+                          child: const Stickers(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

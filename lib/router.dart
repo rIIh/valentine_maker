@@ -9,6 +9,7 @@ import 'package:valentine/pages/onboarding_page.dart';
 import 'package:valentine/pages/share_page.dart';
 import 'package:valentine/pages/valentine_maker_page.dart';
 import 'package:valentine/theme/theme.dart';
+import 'package:valentine/widgets/responsive_scaled_box_pixel_ratio_fix.dart';
 
 final kRouter = GoRouter(
   observers: [
@@ -97,21 +98,14 @@ class FlashPage<T> extends CustomTransitionPage<T> {
   }
 }
 
-class Responsive extends StatefulWidget {
+class Responsive extends StatelessWidget {
   final Widget child;
 
   const Responsive({super.key, required this.child});
 
   @override
-  State<Responsive> createState() => _ResponsiveState();
-}
-
-class _ResponsiveState extends State<Responsive> {
-  final GlobalKey _key = GlobalKey();
-
-  @override
   Widget build(BuildContext context) {
-    return ResponsiveScaledBox(
+    return ResponsiveScaledBoxPixelRatioFix(
       width: ResponsiveValue<double>(
         context,
         conditionalValues: [
@@ -119,10 +113,7 @@ class _ResponsiveState extends State<Responsive> {
           Condition.largerThan(breakpoint: 1920, value: 1920),
         ],
       ).value,
-      child: KeyedSubtree(
-        key: _key,
-        child: widget.child,
-      ),
+      child: child,
     );
   }
 }
