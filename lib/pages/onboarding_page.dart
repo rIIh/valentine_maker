@@ -30,6 +30,7 @@ class OnboardingPage extends StatelessWidget {
       body: Stack(
         children: [
           GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: () => GoRouter.of(context).push('/make'),
             child: OverflowBox(
               maxWidth: double.infinity,
@@ -66,14 +67,16 @@ class OnboardingPage extends StatelessWidget {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 46),
-              child: Text(
-                textAlign: TextAlign.center,
-                style: context.button,
-                'click to continue',
+          IgnorePointer(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 46),
+                child: Text(
+                  textAlign: TextAlign.center,
+                  style: context.button,
+                  'click to continue',
+                ),
               ),
             ),
           )
