@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:valentine/constants/heart_colors.dart';
 import 'package:valentine/pages/share_page.dart';
 import 'package:valentine/theme/theme.dart';
+import 'package:valentine/utility/animated_switcher_layout.dart';
 import 'package:valentine/widgets/color_fill_animation.dart';
 import 'package:valentine/widgets/responsive_scaled_box_pixel_ratio_fix.dart';
 import 'package:valentine/widgets/stickers.dart';
@@ -355,63 +356,64 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: AnimatedSlide(
-              offset: Offset(0, {Steps.edit, Steps.stickers}.contains(step) ? 0 : 1),
+            child: AnimatedSwitcher(
+              switchInCurve: Curves.ease,
+              switchOutCurve: Curves.ease,
               duration: const Duration(milliseconds: 160),
-              curve: Curves.ease,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: context.background,
-                  border: Border(
-                    top: BorderSide(color: context.pink, width: 20),
-                  ),
-                ),
-                child: DragTarget<StickerDragData>(
-                  onAccept: (data) => setState(() => stickers.removeAt(data.index!)),
-                  onWillAccept: (data) => data?.index != null,
-                  builder: (context, candidateData, rejectedData) => SizedBox(
-                    width: double.infinity,
-                    child: Stack(
-                      fit: StackFit.passthrough,
-                      children: [
-                        AnimatedSlide(
-                          duration: const Duration(milliseconds: 160),
-                          offset: Offset(step == Steps.edit ? 0 : -1, 0),
-                          child: Toolbar(
-                            selected: tool,
-                            onSelected: (value) => tool = value,
-                            colors: paintColors,
-                            activePalette: switch (tool) {
-                              DefaultToolbarActions.erase => Palette.sizes,
-                              DefaultToolbarActions.pen => Palette.colors,
-                              _ => Palette.none,
-                            },
-                            selectedColor: selectedPaintColor,
-                            onColorSelected: (index) => selectedPaintColor = index,
-                            selectedSize: _paintController.freeStyleStrokeWidth,
-                            onSizeSelected: (value) {
-                              switch (tool) {
-                                case DefaultToolbarActions.erase:
-                                  _paintController.freeStyleStrokeWidth = value;
-                                  setState(() {});
-
-                                default:
-                              }
-                            },
-                            actions: DefaultToolbarActions.values
-                                .map((e) => ToolbarActionData(value: e, child: e.build()))
-                                .toList(),
+              layoutBuilder: AnimatedSwitcherLayout.builder(alignment: Alignment.bottomCenter),
+              transitionBuilder: (child, animation) => SlideTransition(
+                position: Tween(begin: const Offset(0, 1), end: const Offset(0, 0)).animate(animation),
+                child: child,
+              ),
+              child: KeyedSubtree(
+                key: ValueKey({Steps.edit, Steps.stickers}.contains(step) ? step : null),
+                child: !{Steps.edit, Steps.stickers}.contains(step)
+                    ? const SizedBox()
+                    : Container(
+                        decoration: BoxDecoration(
+                          color: context.background,
+                          border: Border(
+                            top: BorderSide(color: context.pink, width: 20),
                           ),
                         ),
-                        AnimatedSlide(
-                          duration: const Duration(milliseconds: 160),
-                          offset: Offset(step == Steps.stickers ? 0 : 1, 0),
-                          child: const Stickers(),
+                        child: DragTarget<StickerDragData>(
+                          onAccept: (data) => setState(() => stickers.removeAt(data.index!)),
+                          onWillAccept: (data) => data?.index != null,
+                          builder: (context, candidateData, rejectedData) => SizedBox(
+                            width: double.infinity,
+                            child: switch (step) {
+                              Steps.stickers => const Stickers(),
+                              Steps.edit => Toolbar(
+                                  selected: tool,
+                                  onSelected: (value) => tool = value,
+                                  colors: paintColors,
+                                  activePalette: switch (tool) {
+                                    DefaultToolbarActions.erase => Palette.sizes,
+                                    DefaultToolbarActions.pen => Palette.colors,
+                                    DefaultToolbarActions.sticker => Palette.colors,
+                                    _ => Palette.none,
+                                  },
+                                  selectedColor: selectedPaintColor,
+                                  onColorSelected: (index) => selectedPaintColor = index,
+                                  selectedSize: _paintController.freeStyleStrokeWidth,
+                                  onSizeSelected: (value) {
+                                    switch (tool) {
+                                      case DefaultToolbarActions.erase:
+                                        _paintController.freeStyleStrokeWidth = value;
+                                        setState(() {});
+
+                                      default:
+                                    }
+                                  },
+                                  actions: DefaultToolbarActions.values
+                                      .map((e) => ToolbarActionData(value: e, child: e.build()))
+                                      .toList(),
+                                ),
+                              _ => const SizedBox(),
+                            },
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
               ),
             ),
           ),

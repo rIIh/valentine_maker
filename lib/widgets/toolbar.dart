@@ -4,8 +4,9 @@ import 'package:valentine/theme/theme.dart';
 enum DefaultToolbarActions {
   erase,
   pen,
+  fill,
   sticker,
-  fill;
+  ;
 
   Widget build() => Image.asset('assets/images/maker/toolbar/$name.png');
 }
