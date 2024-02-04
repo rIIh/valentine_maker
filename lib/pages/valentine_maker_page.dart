@@ -401,7 +401,7 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
                                   activePalette: switch (tool) {
                                     DefaultToolbarActions.erase => Palette.sizes,
                                     DefaultToolbarActions.pen => Palette.colors,
-                                    DefaultToolbarActions.blister => Palette.colors,
+                                    DefaultToolbarActions.blister => Palette.blister,
                                     _ => Palette.none,
                                   },
                                   selectedColor: selectedPaintColor,

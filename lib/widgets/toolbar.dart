@@ -18,7 +18,7 @@ class ToolbarActionData<T> {
   ToolbarActionData({required this.value, required this.child});
 }
 
-enum Palette { sizes, colors, none }
+enum Palette { sizes, colors, blister, none }
 
 class Toolbar<T> extends StatelessWidget {
   final T selected;
@@ -58,7 +58,7 @@ class Toolbar<T> extends StatelessWidget {
           children: [
             ClipRect(
               child: AnimatedAlign(
-                heightFactor: activePalette == Palette.colors ? 1 : 0,
+                heightFactor: {Palette.colors, Palette.blister}.contains(activePalette) ? 1 : 0,
                 alignment: Alignment.topCenter,
                 duration: const Duration(milliseconds: 200),
                 child: Center(
@@ -82,6 +82,9 @@ class Toolbar<T> extends StatelessWidget {
                                 duration: const Duration(milliseconds: 140),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
+                                  image: activePalette == Palette.blister
+                                      ? const DecorationImage(image: AssetImage('assets/images/noise.png'))
+                                      : null,
                                   border: Border.all(
                                     width: selectedColor == index ? 5 : 0,
                                     color: selectedColor == index ? context.white : Colors.white.withAlpha(0),

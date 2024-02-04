@@ -16,8 +16,6 @@ class BlisterDrawable extends FreeStyleDrawable {
 
   @override
   Paint get paint => super.paint.copyWith(
-        maskFilter: const MaskFilter.blur(BlurStyle.solid, 4),
-        imageFilter: image != null ? ui.ImageFilter.blur(sigmaX: .5, sigmaY: .5) : null,
         shader: image != null
             ? ImageShader(
                 image!,
