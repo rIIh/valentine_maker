@@ -5,7 +5,7 @@ enum DefaultToolbarActions {
   erase,
   pen,
   fill,
-  sticker,
+  blister,
   ;
 
   Widget build() => Image.asset('assets/images/maker/toolbar/$name.png');

@@ -6,6 +6,7 @@ import 'package:flutter_painter_v2/flutter_painter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:valentine/constants/heart_colors.dart';
+import 'package:valentine/drawing/blister_widget.dart';
 import 'package:valentine/pages/share_page.dart';
 import 'package:valentine/theme/theme.dart';
 import 'package:valentine/utility/animated_switcher_layout.dart';
@@ -109,6 +110,7 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
         _paintController.freeStyleMode = FreeStyleMode.erase;
 
       default:
+        _paintController.freeStyleMode = FreeStyleMode.none;
     }
   }
 
@@ -264,7 +266,12 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
             ),
           ),
           IgnorePointer(
-            ignoring: step != Steps.edit || !{DefaultToolbarActions.pen, DefaultToolbarActions.erase}.contains(tool),
+            ignoring: step != Steps.edit ||
+                !{
+                  DefaultToolbarActions.pen,
+                  DefaultToolbarActions.erase,
+                  DefaultToolbarActions.blister,
+                }.contains(tool),
             child: OverflowBox(
               maxWidth: double.infinity,
               maxHeight: double.infinity,
@@ -272,8 +279,12 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
                 width: 100000,
                 height: 100000,
                 child: RepaintBoundary(
-                  child: FlutterPainter(
+                  child: FlutterPainter.builder(
                     controller: _paintController,
+                    builder: (context, painter) => BlisterWidget(
+                      active: step == Steps.edit && tool == DefaultToolbarActions.blister,
+                      child: painter,
+                    ),
                   ),
                 ),
               ),
@@ -390,7 +401,7 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
                                   activePalette: switch (tool) {
                                     DefaultToolbarActions.erase => Palette.sizes,
                                     DefaultToolbarActions.pen => Palette.colors,
-                                    DefaultToolbarActions.sticker => Palette.colors,
+                                    DefaultToolbarActions.blister => Palette.colors,
                                     _ => Palette.none,
                                   },
                                   selectedColor: selectedPaintColor,

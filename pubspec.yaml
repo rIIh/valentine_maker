@@ -21,7 +21,7 @@ dependencies:
 
   # drawing
   flutter_painter_v2: ^2.0.1
-  painter: ^2.0.0
+  image: ^4.1.6
 
   # responsive
   responsive_framework: ^1.1.1
