@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:valentine/firebase_options.dart';
@@ -12,6 +14,8 @@ import 'package:valentine/theme/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding.instance.deferFirstFrame();
+
   if (kIsWeb || !Platform.isLinux) {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     FirebaseAnalytics.instance;
@@ -29,8 +33,17 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  Future<void> precacheAssets(BuildContext context) async {
+    final manifestJson = await rootBundle.loadString('AssetManifest.json');
+    final Map<String, dynamic> manifest = jsonDecode(manifestJson);
+
+    await Future.wait(manifest.keys.map((e) => precacheImage(AssetImage(e), context)));
+  }
+
   @override
   Widget build(BuildContext context) {
+    precacheAssets(context).then((value) => WidgetsBinding.instance.allowFirstFrame());
+
     return MaterialApp.router(
       routerConfig: kRouter,
       title: 'Valentine Maker',
