@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_painter_v2/flutter_painter.dart';
@@ -10,6 +9,7 @@ import 'package:valentine/drawing/blister_widget.dart';
 import 'package:valentine/pages/share_page.dart';
 import 'package:valentine/theme/theme.dart';
 import 'package:valentine/utility/animated_switcher_layout.dart';
+import 'package:valentine/widgets/click_detector.dart';
 import 'package:valentine/widgets/color_fill_animation.dart';
 import 'package:valentine/widgets/responsive_scaled_box_pixel_ratio_fix.dart';
 import 'package:valentine/widgets/stickers.dart';
@@ -189,14 +189,12 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
 
   @override
   Widget build(BuildContext context) {
-    debugPrintGestureArenaDiagnostics = true;
-
     return Scaffold(
       backgroundColor: context.background,
       body: Stack(
         children: [
           Positioned.fill(
-            child: GestureDetector(
+            child: ClickDetector(
               onTapDown: (details) => offset = details.localPosition,
               onTap: handleBackgroundTap,
               child: ColorFillAnimation(
@@ -218,7 +216,7 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
                       .value,
                   child: child,
                 ),
-                child: GestureDetector(
+                child: ClickDetector(
                   onTap: handleHeartTap(),
                   child: Stack(
                     children: [
@@ -297,7 +295,7 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
               child: AnimatedScale(
                 scale: step == Steps.snapshot ? 1 : 0,
                 duration: const Duration(milliseconds: 140),
-                child: GestureDetector(
+                child: ClickDetector(
                   onTap: () => GoRouter.of(context).replace(
                     '/share',
                     extra: ShareTemplate(
@@ -350,7 +348,7 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
             child: LayoutBuilder(
               builder: (context, constraints) => DragTarget<StickerDragData>(
                 hitTestBehavior: HitTestBehavior.translucent,
-                onWillAccept: (data) => true,
+                onWillAcceptWithDetails: (data) => true,
                 onAcceptWithDetails: (data) => setState(() {
                   final offset = data.offset / context.read<Scale>().value -
                       Offset(constraints.maxWidth / 2, constraints.maxHeight / 2);
@@ -388,8 +386,8 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
                           ),
                         ),
                         child: DragTarget<StickerDragData>(
-                          onAccept: (data) => setState(() => stickers.removeAt(data.index!)),
-                          onWillAccept: (data) => data?.index != null,
+                          onAcceptWithDetails: (details) => setState(() => stickers.removeAt(details.data.index!)),
+                          onWillAcceptWithDetails: (details) => details.data.index != null,
                           builder: (context, candidateData, rejectedData) => SizedBox(
                             width: double.infinity,
                             child: switch (step) {
@@ -435,7 +433,7 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
               child: Row(
                 children: [
                   if (_stepState.previous != null)
-                    GestureDetector(
+                    ClickDetector(
                       onTap: () => step = _stepState.previous!,
                       child: Container(
                         width: 70,
@@ -458,7 +456,7 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
                     ),
                   const Spacer(),
                   if (_stepState.next != null)
-                    GestureDetector(
+                    ClickDetector(
                       onTap: () => step = _stepState.next!,
                       child: Container(
                         width: 70,
@@ -477,7 +475,7 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
                       ),
                     )
                   else if (step.end)
-                    GestureDetector(
+                    ClickDetector(
                       onTap: () => GoRouter.of(context).pop(),
                       child: Container(
                         width: 70,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:valentine/theme/theme.dart';
+import 'package:valentine/widgets/click_detector.dart';
 
 const _kPositions = [
   Alignment(-.6, -.9),
@@ -29,7 +30,7 @@ class OnboardingPage extends StatelessWidget {
       backgroundColor: context.appColors.background,
       body: Stack(
         children: [
-          GestureDetector(
+          ClickDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => GoRouter.of(context).push('/make'),
             child: OverflowBox(

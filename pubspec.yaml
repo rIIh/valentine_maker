@@ -19,6 +19,9 @@ dependencies:
   theme_tailor_annotation: ^2.0.0
   google_fonts: ^6.1.0
 
+  # sound
+  audioplayers: ^5.2.1
+
   # drawing
   flutter_painter_v2: ^2.0.1
   image: ^4.1.6
@@ -54,6 +57,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/sounds/
     - assets/images/
     - assets/images/maker/
     - assets/images/maker/toolbar/

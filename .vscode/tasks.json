@@ -3,7 +3,7 @@
     "tasks": [
         {
             "label": "build_runner watch",
-            "command": "flutter pub run build_runner watch",
+            "command": "while true; do flutter pub run build_runner watch; done",
             "type": "shell",
             "runOptions": {
                 "runOn": "folderOpen",
