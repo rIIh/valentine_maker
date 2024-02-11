@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 
 class ClickDetector extends StatefulWidget {
   final HitTestBehavior? behavior;
@@ -25,8 +25,8 @@ class ClickDetector extends StatefulWidget {
 }
 
 class _ClickDetectorState extends State<ClickDetector> {
-  final AudioPlayer tapDownPlayer = AudioPlayer()..setPlayerMode(PlayerMode.lowLatency);
-  final AudioPlayer tapUpPlayer = AudioPlayer()..setPlayerMode(PlayerMode.lowLatency);
+  final AudioPlayer tapDownPlayer = AudioPlayer()..setAsset('sounds/click-down.mp3');
+  final AudioPlayer tapUpPlayer = AudioPlayer()..setAsset('sounds/click-up.mp3');
 
   @override
   void dispose() {
@@ -50,8 +50,8 @@ class _ClickDetectorState extends State<ClickDetector> {
   void handleTapDown(TapDownDetails details) {
     widget.onTapDown?.call(details);
     Future(() async {
-      await tapDownPlayer.stop();
-      await tapDownPlayer.play(AssetSource('sounds/click-down.mp3'), position: Duration.zero);
+      await tapDownPlayer.seek(Duration.zero);
+      await tapDownPlayer.play();
       _future = Future.delayed(const Duration(milliseconds: 100));
     });
   }
@@ -59,13 +59,12 @@ class _ClickDetectorState extends State<ClickDetector> {
   void handleTapUp(TapUpDetails details) {
     widget.onTapUp?.call(details);
     Future(() async {
-      await tapDownPlayer.stop();
       await Future.wait<void>([
         _future ?? Future.value(),
-        if (tapDownPlayer.state == PlayerState.playing) tapDownPlayer.onPlayerComplete.first
+        if (tapDownPlayer.playerState.playing) tapDownPlayer.playingStream.first,
       ]);
-      await tapUpPlayer.stop();
-      tapUpPlayer.play(AssetSource('sounds/click-up.mp3'), position: Duration.zero);
+      await tapUpPlayer.seek(Duration.zero);
+      tapUpPlayer.play();
     });
   }
 }

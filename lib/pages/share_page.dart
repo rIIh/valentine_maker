@@ -2,13 +2,13 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_painter_v2/flutter_painter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -54,8 +54,8 @@ class _SharePageState extends State<SharePage> with SingleTickerProviderStateMix
   @override
   void initState() {
     AudioPlayer()
-      ..setPlayerMode(PlayerMode.lowLatency)
-      ..play(AssetSource('sounds/camera.mp3'));
+      ..setAsset('sounds/camera.mp3')
+      ..play();
 
     super.initState();
   }

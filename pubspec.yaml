@@ -21,6 +21,7 @@ dependencies:
 
   # sound
   audioplayers: ^5.2.1
+  just_audio: ^0.9.36
 
   # drawing
   flutter_painter_v2: ^2.0.1
