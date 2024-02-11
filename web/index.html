@@ -65,6 +65,11 @@
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
+  <style>
+    body {
+      background-color: #FA9FED;
+    }
+  </style>
 </head>
 <body>
   <script>
@@ -75,7 +80,7 @@
           serviceWorkerVersion: serviceWorkerVersion,
         },
         onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
+          engineInitializer.initializeEngine({renderer: "canvaskit"}).then(function(appRunner) {
             appRunner.runApp();
           });
         }
