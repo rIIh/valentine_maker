@@ -52,6 +52,8 @@ dev_dependencies:
   build_runner: ^2.4.0
   flutter_lints: ^2.0.0
   theme_tailor: ^2.0.0
+  sentry_dart_plugin: ^1.7.0
+
 
 flutter:
   uses-material-design: true
@@ -66,3 +68,12 @@ flutter:
     - assets/images/maker/stickers/
     - assets/images/onboarding/
     - assets/images/onboarding/floating/
+
+sentry:
+  upload_debug_symbols: false
+  upload_source_maps: true
+  upload_sources: false
+  wait_for_processing: false
+  log_level: error # possible values: trace, debug, info, warn, error
+  commits: auto
+  ignore_missing: true
