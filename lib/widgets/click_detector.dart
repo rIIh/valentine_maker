@@ -25,12 +25,8 @@ class ClickDetector extends StatefulWidget {
 }
 
 class _ClickDetectorState extends State<ClickDetector> {
-  final AudioPlayer tapDownPlayer = AudioPlayer()
-    ..setPlayerMode(PlayerMode.lowLatency)
-    ..setVolume(.35);
-  final AudioPlayer tapUpPlayer = AudioPlayer()
-    ..setPlayerMode(PlayerMode.lowLatency)
-    ..setVolume(.35);
+  final AudioPlayer tapDownPlayer = AudioPlayer()..setPlayerMode(PlayerMode.lowLatency);
+  final AudioPlayer tapUpPlayer = AudioPlayer()..setPlayerMode(PlayerMode.lowLatency);
 
   @override
   void dispose() {
