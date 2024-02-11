@@ -15,20 +15,22 @@ import 'package:valentine/router.dart';
 import 'package:valentine/theme/theme.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  WidgetsBinding.instance.deferFirstFrame();
-
-  if (kIsWeb || !Platform.isLinux) {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    FirebaseAnalytics.instance;
-  }
-
   await SentryFlutter.init(
     (options) {
       options.dsn = 'https://93f36bd2e378e24a6596d76d036a4406@o493241.ingest.sentry.io/4506648831655936';
       options.tracesSampleRate = 1.0;
     },
-    appRunner: () => runApp(const MyApp()),
+    appRunner: () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      WidgetsBinding.instance.deferFirstFrame();
+
+      if (kIsWeb || !Platform.isLinux) {
+        await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+        FirebaseAnalytics.instance;
+      }
+
+      runApp(const MyApp());
+    },
   );
 }
 
