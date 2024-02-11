@@ -183,6 +183,18 @@ class _ToolbarActionState extends State<ToolbarAction> with TickerProviderStateM
   late final _controller = AnimationController(vsync: this);
 
   @override
+  void initState() {
+    _controller.duration = const Duration(milliseconds: 140);
+    if (widget.selected) {
+      _controller.forward();
+    } else {
+      _controller.reverse();
+    }
+
+    super.initState();
+  }
+
+  @override
   void didUpdateWidget(covariant ToolbarAction oldWidget) {
     _controller.duration = const Duration(milliseconds: 140);
     if (widget.selected) {

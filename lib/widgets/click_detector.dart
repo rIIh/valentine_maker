@@ -25,8 +25,12 @@ class ClickDetector extends StatefulWidget {
 }
 
 class _ClickDetectorState extends State<ClickDetector> {
-  final AudioPlayer tapDownPlayer = AudioPlayer()..setPlayerMode(PlayerMode.lowLatency);
-  final AudioPlayer tapUpPlayer = AudioPlayer()..setPlayerMode(PlayerMode.lowLatency);
+  final AudioPlayer tapDownPlayer = AudioPlayer()
+    ..setPlayerMode(PlayerMode.lowLatency)
+    ..setVolume(.35);
+  final AudioPlayer tapUpPlayer = AudioPlayer()
+    ..setPlayerMode(PlayerMode.lowLatency)
+    ..setVolume(.35);
 
   @override
   void dispose() {
@@ -48,17 +52,24 @@ class _ClickDetectorState extends State<ClickDetector> {
 
   Future<void>? _future;
   void handleTapDown(TapDownDetails details) {
-    tapDownPlayer.play(AssetSource('sounds/click-down.mp3'), position: Duration.zero);
-    _future = Future.delayed(const Duration(milliseconds: 140));
     widget.onTapDown?.call(details);
+    Future(() async {
+      await tapDownPlayer.stop();
+      await tapDownPlayer.play(AssetSource('sounds/click-down.mp3'), position: Duration.zero);
+      _future = Future.delayed(const Duration(milliseconds: 100));
+    });
   }
 
   void handleTapUp(TapUpDetails details) {
+    widget.onTapUp?.call(details);
     Future(() async {
-      await Future.any<void>([_future ?? Future.value()]);
+      await tapDownPlayer.stop();
+      await Future.wait<void>([
+        _future ?? Future.value(),
+        if (tapDownPlayer.state == PlayerState.playing) tapDownPlayer.onPlayerComplete.first
+      ]);
+      await tapUpPlayer.stop();
       tapUpPlayer.play(AssetSource('sounds/click-up.mp3'), position: Duration.zero);
     });
-
-    widget.onTapUp?.call(details);
   }
 }

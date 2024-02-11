@@ -35,10 +35,10 @@ final kLightTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
     seedColor: AppColors.light.background,
   ),
-  textTheme: const TextTheme().apply(
-    bodyColor: AppColors.light.text,
-    displayColor: AppColors.light.text,
-  ),
+  textTheme: ThemeData().textTheme.apply(
+        bodyColor: AppColors.light.text,
+        displayColor: AppColors.light.text,
+      ),
   extensions: [
     AppColors.light,
     AppStyles.core,
@@ -52,10 +52,10 @@ final kDarkTheme = ThemeData.dark(
   colorScheme: ColorScheme.fromSeed(
     seedColor: AppColors.light.background,
   ),
-  textTheme: const TextTheme().apply(
-    bodyColor: AppColors.light.text,
-    displayColor: AppColors.light.text,
-  ),
+  textTheme: ThemeData().textTheme.apply(
+        bodyColor: AppColors.light.text,
+        displayColor: AppColors.light.text,
+      ),
   extensions: [
     AppColors.light,
     AppStyles.core,

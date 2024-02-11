@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,15 @@ class _SharePageState extends State<SharePage> with SingleTickerProviderStateMix
   bool _busy = false;
   set busy(bool value) => mounted && _busy != value ? setState(() => _busy = value) : null;
   bool get busy => _busy;
+
+  @override
+  void initState() {
+    AudioPlayer()
+      ..setPlayerMode(PlayerMode.lowLatency)
+      ..play(AssetSource('sounds/camera.mp3'));
+
+    super.initState();
+  }
 
   @override
   void dispose() {

@@ -295,7 +295,7 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
               child: AnimatedScale(
                 scale: step == Steps.snapshot ? 1 : 0,
                 duration: const Duration(milliseconds: 140),
-                child: ClickDetector(
+                child: GestureDetector(
                   onTap: () => GoRouter.of(context).replace(
                     '/share',
                     extra: ShareTemplate(
