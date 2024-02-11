@@ -18,7 +18,7 @@ Future<void> main() async {
   await SentryFlutter.init(
     (options) {
       options.dsn = 'https://93f36bd2e378e24a6596d76d036a4406@o493241.ingest.sentry.io/4506648831655936';
-      options.tracesSampleRate = 1.0;
+      options.tracesSampleRate = kDebugMode ? 0 : 1;
     },
     appRunner: () async {
       WidgetsFlutterBinding.ensureInitialized();
