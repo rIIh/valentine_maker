@@ -561,7 +561,7 @@ class HeartTapTooltip extends StatefulWidget {
 }
 
 class _HeartTapTooltipState extends State<HeartTapTooltip> with SingleTickerProviderStateMixin {
-  late final _controller = AnimationController(vsync: this, duration: Duration(seconds: 1))..repeat();
+  late final _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1))..repeat();
 
   @override
   void dispose() {
@@ -572,7 +572,7 @@ class _HeartTapTooltipState extends State<HeartTapTooltip> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: Offset(30, 15),
+      offset: const Offset(30, 15),
       child: Transform.rotate(
         angle: -15 / 360 * 2 * pi,
         child: Center(
