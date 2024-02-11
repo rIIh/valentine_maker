@@ -93,6 +93,7 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
   late int faceIndex = Random().nextInt(kFaces.length + 1) - 1;
 
   Steps _step = Steps.chooseFace;
+  bool _heartTapped = false;
 
   Steps get step => _step;
   set step(Steps value) => mounted && _step != value ? setState(() => _step = value) : null;
@@ -159,6 +160,8 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
     switch (step) {
       case Steps.chooseFace:
         return () {
+          _heartTapped = true;
+
           faceIndex++;
           if (faceIndex >= kFaces.length) faceIndex = -1;
           setState(() {});
@@ -243,10 +246,17 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
                                     AnimatedSwitcher(
                                       duration: const Duration(milliseconds: 240),
                                       switchInCurve: Curves.decelerate,
-                                      child: Image.asset(
-                                        key: ValueKey(heartColorIndex),
-                                        color: colors[heartColorIndex].foreground,
-                                        'assets/images/maker/heart.png',
+                                      child: Stack(
+                                        children: [
+                                          Image.asset(
+                                            key: ValueKey(heartColorIndex),
+                                            color: colors[heartColorIndex].foreground,
+                                            'assets/images/maker/heart.png',
+                                          ),
+                                          Positioned.fill(
+                                            child: HeartTapTooltip(visible: !_heartTapped && handleHeartTap != null),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     Positioned.fill(
@@ -533,6 +543,51 @@ class _ValentineMakerPageState extends State<ValentineMakerPage> with TickerProv
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class HeartTapTooltip extends StatefulWidget {
+  final bool visible;
+
+  const HeartTapTooltip({
+    super.key,
+    required this.visible,
+  });
+
+  @override
+  State<HeartTapTooltip> createState() => _HeartTapTooltipState();
+}
+
+class _HeartTapTooltipState extends State<HeartTapTooltip> with SingleTickerProviderStateMixin {
+  late final _controller = AnimationController(vsync: this, duration: Duration(seconds: 1))..repeat();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: Offset(30, 15),
+      child: Transform.rotate(
+        angle: -15 / 360 * 2 * pi,
+        child: Center(
+          child: AnimatedScale(
+            duration: const Duration(milliseconds: 140),
+            scale: widget.visible ? 1 : 0,
+            child: ScaleTransition(
+              scale: TweenSequence<double>([
+                TweenSequenceItem(tween: Tween(begin: 1.0, end: .9), weight: 1),
+                TweenSequenceItem(tween: Tween(begin: .9, end: 1.0), weight: 1),
+              ]).animate(_controller),
+              child: Image.asset('assets/icons/hand.png'),
+            ),
+          ),
+        ),
       ),
     );
   }
