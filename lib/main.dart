@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -12,6 +11,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:valentine/firebase_options.dart';
 import 'package:valentine/router.dart';
+import 'package:valentine/theme/sounds.dart';
 import 'package:valentine/theme/theme.dart';
 
 Future<void> main() async {
@@ -51,7 +51,8 @@ class MyApp extends StatelessWidget {
     Future.wait([
       precacheAssets(context),
       GoogleFonts.pendingFonts([GoogleFonts.fredoka()]),
-      AudioCache.instance.loadAll(['sounds/click-down.mp3', 'sounds/click-up.mp3'])
+      // AudioCache.instance.loadAll(['sounds/click-down.mp3', 'sounds/click-up.mp3']),
+      Audio.initialize(),
     ]).catchError((_) => []).then((value) {
       if (!WidgetsBinding.instance.firstFrameRasterized) {
         WidgetsBinding.instance.allowFirstFrame();

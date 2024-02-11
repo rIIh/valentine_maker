@@ -20,6 +20,7 @@ dependencies:
   google_fonts: ^6.1.0
 
   # sound
+  flame_audio: ^2.1.8
   audioplayers: ^5.2.1
 
   # drawing

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:valentine/pages/valentine_maker_page.dart';
+import 'package:valentine/theme/sounds.dart';
 import 'package:valentine/utility/intersperse_extensions.dart';
 import 'package:valentine/widgets/responsive_scaled_box_pixel_ratio_fix.dart';
 
@@ -86,6 +87,8 @@ class DraggableSticker extends StatelessWidget {
     return Draggable(
       maxSimultaneousDrags: 1,
       data: StickerDragData(null, image),
+      onDragStarted: () => Audio.clickDown(),
+      onDragEnd: (_) => Audio.clickUp(),
       feedback: DraggableFeedbackSticker(image: image, scale: context.watch<Scale>()),
       child: Image.asset(image),
     );

@@ -14,6 +14,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:valentine/pages/valentine_maker_page.dart';
 import 'package:valentine/theme/theme.dart';
+import 'package:valentine/widgets/click_detector.dart';
 
 final class ShareTemplate {
   final PainterController paint;
@@ -143,7 +144,7 @@ class _SharePageState extends State<SharePage> with SingleTickerProviderStateMix
           children: [
             Center(
               child: Padding(
-                padding: const EdgeInsets.all(28),
+                padding: const EdgeInsets.all(28).copyWith(bottom: 160),
                 child: _RevealTransition(
                   animation: _controller,
                   child: FittedBox(
@@ -185,7 +186,7 @@ class _SharePageState extends State<SharePage> with SingleTickerProviderStateMix
                 child: Row(
                   children: [
                     const Spacer(),
-                    GestureDetector(
+                    ClickDetector(
                       onTap: () => GoRouter.of(context).pop(),
                       child: Container(
                         width: 70,
@@ -211,7 +212,7 @@ class _SharePageState extends State<SharePage> with SingleTickerProviderStateMix
               minimum: const EdgeInsets.only(bottom: 61),
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: GestureDetector(
+                child: ClickDetector(
                   onTap: busy ? null : share,
                   child: Image.asset('assets/icons/share.png'),
                 ),

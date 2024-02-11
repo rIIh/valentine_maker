@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:valentine/theme/theme.dart';
+import 'package:valentine/widgets/click_detector.dart';
 
 enum DefaultToolbarActions {
   erase,
@@ -74,7 +75,7 @@ class Toolbar<T> extends StatelessWidget {
                         spacing: 33,
                         children: [
                           for (final (index, color) in colors.indexed)
-                            GestureDetector(
+                            ClickDetector(
                               onTap: () => onColorSelected?.call(index),
                               child: AnimatedContainer(
                                 width: 55,
@@ -118,7 +119,7 @@ class Toolbar<T> extends StatelessWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           for (final size in <double>[22, 33, 44, 55])
-                            GestureDetector(
+                            ClickDetector(
                               onTap: () => onSizeSelected?.call(size),
                               child: AnimatedContainer(
                                 width: size,
@@ -224,7 +225,7 @@ class _ToolbarActionState extends State<ToolbarAction> with TickerProviderStateM
         offset: animation.value,
         child: child,
       ),
-      child: GestureDetector(
+      child: ClickDetector(
         onTap: widget.onSelected,
         child: widget.child,
       ),
